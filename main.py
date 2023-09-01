@@ -187,11 +187,6 @@ clear_button.grid(row=6, column=3, padx=10, pady=10)
 delete_button = tk.Button(window, text="Delete", command=delete_entry)
 delete_button.grid(row=6, column=2, padx=10, pady=10)
 
-
-
-# Create the display window
-##display_window = tk.List(window, height=10, width=75)
-#display_window.grid(row=7, column=0, columnspan=2, padx=10, pady=10)
 from tkinter import ttk
 window = tk.Tk()
 window.title("Game Collection")
@@ -234,6 +229,9 @@ total_value_label = tk.Label(window, text="Total Value:")
 total_value_label.grid(row=9, column=0, padx=10, pady=5, sticky="e")
 total_value_value_label = tk.Label(window, text="0.00")
 total_value_value_label.grid(row=9, column=1, padx=10, pady=5, sticky="w")
+
+exit_system_button = tk.Button(window, text="Exit", command=lambda: exit())
+exit_system_button.grid(row=10, column=2, padx=10, pady=5, sticky="e")
 
 sort_system_button = tk.Button(window, text="Sort by System", command=lambda: sort_collection("System"))
 sort_system_button.grid(row=8, column=1, padx=10, pady=5, sticky="e")
