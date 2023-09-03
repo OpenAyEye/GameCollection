@@ -1,8 +1,9 @@
 import tkinter as tk
 import pandas as pd
 import os
-import requests
-import json
+import gdrive_upload
+
+
 selected_item_index = None
 def update_entry():
     global selected_item_index
@@ -97,7 +98,8 @@ def add_entry():
     write_excel_file(dataframe, "game_collection.xlsx")
 
     # Update the display with the new data
-    update_display(dataframe)
+    #update_display(dataframe)
+    sort_collection("Title")
 
 
 # Function to clear the input fields
@@ -232,6 +234,10 @@ total_value_value_label.grid(row=9, column=1, padx=10, pady=5, sticky="w")
 
 exit_system_button = tk.Button(window, text="Exit", command=lambda: exit())
 exit_system_button.grid(row=10, column=2, padx=10, pady=5, sticky="e")
+
+update_drive_button = tk.Button(window, text="Save to GDrive", command=lambda: gdrive_upload.main()) # "game_collection.xlsx"))
+update_drive_button.grid(row=11, column=0, padx=10, pady=5, sticky="e")
+
 
 sort_system_button = tk.Button(window, text="Sort by System", command=lambda: sort_collection("System"))
 sort_system_button.grid(row=8, column=1, padx=10, pady=5, sticky="e")
