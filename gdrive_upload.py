@@ -1,7 +1,7 @@
 from __future__ import print_function
-
+import datetime
 import os.path
-
+import os
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -12,7 +12,86 @@ from googleapiclient.http import MediaFileUpload
 # If modifying these scopes, delete the file token_bak.json.
 SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly', 'https://www.googleapis.com/auth/drive.file']
 
-def list_files(creds):
+
+
+def check_date():
+    from google.oauth2 import service_account
+    from googleapiclient.discovery import build
+    import creddy
+
+    # Define the necessary scopes
+    SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
+    """Shows basic usage of the Drive v3 API.
+            Prints the names and ids of the first 10 files the user has access to.
+            """
+    creds = None
+    import creddy
+    cred_file = creddy.client_secret
+    # The file token_bak.json stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                cred_file, SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
+
+
+    # Build the Drive API service
+    service = build('drive', 'v3', credentials=creds)
+
+    # Specify the file ID of the file you want to check
+    file_id = '1haSp-9dS0qX4PfchW1LgC35M8bxOw62Y'
+
+    try:
+        # Retrieve the file metadata
+        file_metadata = service.files().get(fileId=file_id, fields='modifiedTime').execute()
+
+        # Get the 'modifiedTime' property from the file metadata
+        modified_time = file_metadata['modifiedTime']
+
+        print(f"Last modified time of the file: {modified_time}")
+        return modified_time
+
+
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+def list_files():
+    """Shows basic usage of the Drive v3 API.
+        Prints the names and ids of the first 10 files the user has access to.
+        """
+    creds = None
+    import creddy
+    cred_file = creddy.client_secret
+    # The file token_bak.json stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                cred_file, SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
     try:
         service = build('drive', 'v3', credentials=creds)
 
@@ -93,7 +172,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    check_date()
 
 
 # Find the existing file by name

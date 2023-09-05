@@ -2,9 +2,41 @@ import tkinter as tk
 import pandas as pd
 import os
 import gdrive_upload
-
-
+import os
+import datetime
+import pytz
+import gdrive_sync
 selected_item_index = None
+
+def gdrive_sync_bak():
+    # Get the last modified time of the Google Drive file as a string
+    gdrive_date_str = gdrive_upload.check_date()
+
+    # Convert the string to a datetime object and set it to UTC timezone
+    gdrive_date_time = datetime.datetime.fromisoformat(gdrive_date_str).astimezone(pytz.UTC)
+
+    # Specify the filename of the local file you want to check
+    filename = 'game_collection.xlsx'
+
+    try:
+        # Get the last modified time of the local file and set it to UTC timezone
+        local_modified_time = datetime.datetime.fromtimestamp(os.path.getmtime(filename), tz=pytz.UTC)
+
+        # Compare the two timestamps
+        time_difference = gdrive_date_time - local_modified_time
+
+        if time_difference.total_seconds() > 0:
+            print("The Google Drive file is newer than the local file.")
+        elif time_difference.total_seconds() < 0:
+            print("The local file is newer than the Google Drive file.")
+        else:
+            print("The files have the same last modified time.")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+
 def update_entry():
     global selected_item_index
     title = title_entry.get()
@@ -237,6 +269,9 @@ exit_system_button.grid(row=10, column=2, padx=10, pady=5, sticky="e")
 
 update_drive_button = tk.Button(window, text="Save to GDrive", command=lambda: gdrive_upload.main()) # "game_collection.xlsx"))
 update_drive_button.grid(row=11, column=0, padx=10, pady=5, sticky="e")
+
+update_drive_button = tk.Button(window, text="Update From GDrive", command=lambda: gdrive_sync.gdrive_sync())#gdrive_upload.check_date()) # "game_collection.xlsx"))
+update_drive_button.grid(row=12, column=0, padx=10, pady=5, sticky="e")
 
 
 sort_system_button = tk.Button(window, text="Sort by System", command=lambda: sort_collection("System"))
